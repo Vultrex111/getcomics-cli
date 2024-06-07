@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import argparse
 import re
+import subprocess
 
 def search_getcomics(keyword, page_number=1):
     search_url = f"https://getcomics.org/page/{page_number}/?s={keyword.replace(' ', '+')}"
@@ -42,9 +43,15 @@ def get_download_links(link):
     download_elements = soup.find_all('a', class_='aio-red', href=True)
     for element in download_elements:
         download_link = element['href']
-        download_links.append(download_link)
+        # Filter out links from readcomicsonline.ru
+        if 'readcomicsonline.ru' not in download_link:
+            download_links.append(download_link)
 
     return download_links
+
+def download_with_aria2c(url, output_dir='.'):
+    command = ['aria2c', '-d', output_dir, url]
+    subprocess.run(command)
 
 def main():
     parser = argparse.ArgumentParser(description="Search GetComics for a keyword and return all matching links categorized by year.")
@@ -57,16 +64,37 @@ def main():
 
     categorized_links = search_getcomics(keyword, page_number)
     
+    comics = []
     for year, links in categorized_links.items():
-        print(f"\nYear {year}:")
         for item in links:
-            print("--------------------------------------------------------")
-            print(f"  Title: {item['text']}")
-            print(f"  Link: {item['href']}")
-            download_links = get_download_links(item['href'])
-            for download_link in download_links:
-                print(f"    Download Link: {download_link}")
-            print("--------------------------------------------------------")
+            comics.append({'year': year, 'text': item['text'], 'href': item['href']})
+
+    if not comics:
+        print("No comics found.")
+        return
+
+    for idx, comic in enumerate(comics, start=1):
+        print(f"{idx}. [{comic['year']}] {comic['text']}")
+
+    try:
+        choice = int(input("\nEnter the number of the comic you want to download: "))
+        selected_comic = comics[choice - 1]
+        print(f"\nYou selected: {selected_comic['text']} ({selected_comic['year']})")
+        
+        download_links = get_download_links(selected_comic['href'])
+        if download_links:
+            print("Download links found:")
+            for idx, download_link in enumerate(download_links, start=1):
+                print(f"{idx}. {download_link}")
+            download_choice = int(input("\nEnter the number of the download link you want to use: "))
+            download_url = download_links[download_choice - 1]
+            print(f"\nDownloading from: {download_url}")
+            download_with_aria2c(download_url)
+            print("Download completed.")
+        else:
+            print("No download links found for the selected comic.")
+    except (ValueError, IndexError):
+        print("Invalid selection. Exiting.")
 
 if __name__ == "__main__":
     main()
