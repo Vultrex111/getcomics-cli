@@ -83,13 +83,10 @@ def main():
         
         download_links = get_download_links(selected_comic['href'])
         if download_links:
-            print("Download links found:")
-            for idx, download_link in enumerate(download_links, start=1):
-                print(f"{idx}. {download_link}")
-            download_choice = int(input("\nEnter the number of the download link you want to use: "))
-            download_url = download_links[download_choice - 1]
-            print(f"\nDownloading from: {download_url}")
-            download_with_aria2c(download_url)
+            print("Download link found:")
+            print(download_links[0])
+            input("\nPress Enter to start the download...")
+            download_with_aria2c(download_links[0])
             print("Download completed.")
         else:
             print("No download links found for the selected comic.")
