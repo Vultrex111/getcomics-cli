@@ -11,6 +11,7 @@ This script allows you to search for and download comics from getcomics.org. You
 - `aria2c` installed on your system
 
 ## Installation
+### General Steps
 1. **Install Python**: Ensure you have Python 3.x installed on your system. You can download it from [python.org](https://www.python.org/).
 
 2. **Install required libraries**: You can install the required Python libraries using pip:
@@ -22,9 +23,17 @@ This script allows you to search for and download comics from getcomics.org. You
 
     - **Ubuntu/Debian**:
         ```sh
-        sudo apt-get install aria2c
-        sudo dnf install aria2c
-        sudo pacman -S aria2c
+        sudo apt-get install aria2
+        ```
+
+    - **Fedora**:
+        ```sh
+        sudo dnf install aria2
+        ```
+
+    - **Arch Linux**:
+        ```sh
+        sudo pacman -S aria2
         ```
 
     - **macOS** (using Homebrew):
@@ -33,6 +42,14 @@ This script allows you to search for and download comics from getcomics.org. You
         ```
 
     - **Windows**: Download the Windows binary from the [official aria2 release page](https://github.com/aria2/aria2/releases) and follow the installation instructions.
+
+    - **Android**: Use Termux to install Python and aria2.
+        1. Install Termux from the Google Play Store or F-Droid.
+        2. Open Termux and run:
+            ```sh
+            pkg install python aria2
+            pip install requests beautifulsoup4
+            ```
 
 ## Usage
 1. **Clone or download the script**: Save the `getcomics-cli.py` script to your local machine.
@@ -54,12 +71,9 @@ This script allows you to search for and download comics from getcomics.org. You
     - The script will display a list of comics matching your search keyword, categorized by year.
     - Enter the number corresponding to the comic you want to download.
 
-4. **Select a download link**:
-    - The script will display a list of available download links for the selected comic.
-    - Enter the number corresponding to the download link you want to use.
-
-5. **Download**:
-    - The script will use `aria2c` to download the selected comic.
+4. **Confirm Download**:
+    - If a valid download link is found, it will be displayed.
+    - Press Enter to confirm and start the download.
 
 ## Example
 1. **Search for comics**:
@@ -76,18 +90,16 @@ This script allows you to search for and download comics from getcomics.org. You
     Enter the number of the comic you want to download: 1
     ```
 
-2. **Select a download link**:
+2. **Confirm download**:
     ```
-    Download links found:
-    1. https://example.com/download1
-    2. https://example.com/download2
+    Download link found:
+    https://example.com/download1
 
-    Enter the number of the download link you want to use: 1
+    Press Enter to start the download...
     ```
 
 3. **Download**:
     ```
-    Downloading from: https://example.com/download1
     Download completed.
     ```
 
